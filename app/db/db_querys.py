@@ -1,4 +1,4 @@
-from db.conexion import DatabaseConn
+from app.db.conexion import DatabaseConn
 
 class DB_Queries:
     def __init__(self):

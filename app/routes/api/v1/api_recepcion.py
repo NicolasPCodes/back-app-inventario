@@ -2,13 +2,18 @@ from flask import Flask, jsonify, request
 import mysql.connector
 from dotenv import load_dotenv
 import os
-from db.db_querys import DB_Queries
+from app.db.db_querys import DB_Queries
 # Inicia variables de entorno
 load_dotenv()
 # Inicializa a aplicacion Flask
 app = Flask(__name__)
 db_queries = DB_Queries()
 
+
+# Endpoint de debug
+@app.route('/', methods=['GET'])
+def debug_main():
+    return jsonify({"message": "Hello world!"}), 200
 
 # Endpoint para obtener recepcion
 @app.route('/recepcion', methods=['POST'])
@@ -51,6 +56,21 @@ def detalle_oc():
         return jsonify({"status": "success", "data": oc_detail}), 200
     else:
         return jsonify({"status": "error", "message": "OC no encontrada"}), 404
+
+# Endpoint para actualizar recepcion de liena OC
+@app.route('/actualizar_recepcion', methods=['POST'])
+def actualizar_recepcion():
+    data = request.get_json()
+    sku_producto = data['sku']
+    numero_oc = data['numero_oc']
+    cantidad_recepcionada = data['cantidad_recepcionada']
+
+    # Actualizar recepcion
+    update_status = db_queries.update_recepcion(sku_producto, numero_oc, cantidad_recepcionada)
+    if update_status:
+        return jsonify({"status": "success", "message": "Recepcion actualizada"}), 200
+    else:
+        return jsonify({"status": "error", "message": "Error al actualizar recepcion"}), 500
 
 # if __name__ == '__main__':
 #     app.run(debug=True)

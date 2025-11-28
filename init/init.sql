@@ -16,6 +16,13 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Create dump of database 'recepcion_dbs'
+--
+
+CREATE DATABASE IF NOT EXISTS recepcion_dbs;
+USE recepcion_dbs;
+
+--
 -- Table structure for table `discrepancias`
 --
 
@@ -51,7 +58,7 @@ CREATE TABLE `orden_compra` (
   PRIMARY KEY (`id_oc`),
   KEY `sku` (`sku`),
   CONSTRAINT `orden_compra_ibfk_1` FOREIGN KEY (`sku`) REFERENCES `productos` (`sku`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -69,7 +76,7 @@ CREATE TABLE `productos` (
   `categoria` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`sku`),
   UNIQUE KEY `id_producto` (`id_producto`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -111,7 +118,7 @@ CREATE TABLE `usuarios` (
   `rol` enum('encargado','jefe_tienda','auditor','admin') NOT NULL,
   `password_hash` varchar(255) NOT NULL,
   PRIMARY KEY (`id_usuario`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -124,3 +131,22 @@ CREATE TABLE `usuarios` (
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2025-11-23 16:53:12
+
+--- INSERT VALORES
+INSERT INTO `productos` (`sku`,`id_producto`,`nombre`,`descripcion`,`categoria`) VALUES ('SKU12310',6,'Bloqueador en barra','Cuidado facial.','Cara');
+INSERT INTO `productos` (`sku`,`id_producto`,`nombre`,`descripcion`,`categoria`) VALUES ('SKU12345',1,'Labial blush','Tinte rojo para labios.','Labios');
+INSERT INTO `productos` (`sku`,`id_producto`,`nombre`,`descripcion`,`categoria`) VALUES ('SKU12346',2,'Labial brillo','Brillo para labios.','Labios');
+INSERT INTO `productos` (`sku`,`id_producto`,`nombre`,`descripcion`,`categoria`) VALUES ('SKU12347',3,'Sombras','Sombras para ojos.','Ojos');
+INSERT INTO `productos` (`sku`,`id_producto`,`nombre`,`descripcion`,`categoria`) VALUES ('SKU12349',5,'Skincare facial','Cuidado facial.','Cara');
+INSERT INTO `productos` (`sku`,`id_producto`,`nombre`,`descripcion`,`categoria`) VALUES ('SKU12385',4,'Encrespador','Especial para pestañas.','Ojos');
+
+INSERT INTO `usuarios` (`nombre`, `apellido`, `fecha_creacion`, `estado_usuario`, `rol`, `password_hash`)VALUES("Nicolas", "Paredes", "2025-11-02 12:00:00", 'activo', 'encargado', "abc12354");
+
+INSERT INTO `orden_compra` (`id_oc`,`numero_oc`,`sku`,`tienda`,`cantidad`) VALUES (1,'OC-67890','SKU12345','COS',100);
+INSERT INTO `orden_compra` (`id_oc`,`numero_oc`,`sku`,`tienda`,`cantidad`) VALUES (3,'OC-67890','SKU12310','COS',10);
+INSERT INTO `orden_compra` (`id_oc`,`numero_oc`,`sku`,`tienda`,`cantidad`) VALUES (4,'OC-67892','SKU12346','COS',100);
+INSERT INTO `orden_compra` (`id_oc`,`numero_oc`,`sku`,`tienda`,`cantidad`) VALUES (5,'OC-67892','SKU12347','COS',120);
+INSERT INTO `orden_compra` (`id_oc`,`numero_oc`,`sku`,`tienda`,`cantidad`) VALUES (6,'OC-67892','SKU12385','COS',200);
+INSERT INTO `orden_compra` (`id_oc`,`numero_oc`,`sku`,`tienda`,`cantidad`) VALUES (7,'OC-67893','SKU12346','MAI',200);
+INSERT INTO `orden_compra` (`id_oc`,`numero_oc`,`sku`,`tienda`,`cantidad`) VALUES (8,'OC-67893','SKU12347','MAI',20);
+INSERT INTO `orden_compra` (`id_oc`,`numero_oc`,`sku`,`tienda`,`cantidad`) VALUES (9,'OC-67894','SKU12385','MAI',200);
