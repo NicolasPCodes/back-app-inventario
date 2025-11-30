@@ -132,21 +132,21 @@ CREATE TABLE `usuarios` (
 
 -- Dump completed on 2025-11-23 16:53:12
 
---- INSERT VALORES
-INSERT INTO `productos` (`sku`,`id_producto`,`nombre`,`descripcion`,`categoria`) VALUES ('SKU12310',6,'Bloqueador en barra','Cuidado facial.','Cara');
-INSERT INTO `productos` (`sku`,`id_producto`,`nombre`,`descripcion`,`categoria`) VALUES ('SKU12345',1,'Labial blush','Tinte rojo para labios.','Labios');
-INSERT INTO `productos` (`sku`,`id_producto`,`nombre`,`descripcion`,`categoria`) VALUES ('SKU12346',2,'Labial brillo','Brillo para labios.','Labios');
-INSERT INTO `productos` (`sku`,`id_producto`,`nombre`,`descripcion`,`categoria`) VALUES ('SKU12347',3,'Sombras','Sombras para ojos.','Ojos');
-INSERT INTO `productos` (`sku`,`id_producto`,`nombre`,`descripcion`,`categoria`) VALUES ('SKU12349',5,'Skincare facial','Cuidado facial.','Cara');
-INSERT INTO `productos` (`sku`,`id_producto`,`nombre`,`descripcion`,`categoria`) VALUES ('SKU12385',4,'Encrespador','Especial para pestañas.','Ojos');
-
-INSERT INTO `usuarios` (`nombre`, `apellido`, `fecha_creacion`, `estado_usuario`, `rol`, `password_hash`)VALUES("Nicolas", "Paredes", "2025-11-02 12:00:00", 'activo', 'encargado', "abc12354");
-
-INSERT INTO `orden_compra` (`id_oc`,`numero_oc`,`sku`,`tienda`,`cantidad`) VALUES (1,'OC-67890','SKU12345','COS',100);
-INSERT INTO `orden_compra` (`id_oc`,`numero_oc`,`sku`,`tienda`,`cantidad`) VALUES (3,'OC-67890','SKU12310','COS',10);
-INSERT INTO `orden_compra` (`id_oc`,`numero_oc`,`sku`,`tienda`,`cantidad`) VALUES (4,'OC-67892','SKU12346','COS',100);
-INSERT INTO `orden_compra` (`id_oc`,`numero_oc`,`sku`,`tienda`,`cantidad`) VALUES (5,'OC-67892','SKU12347','COS',120);
-INSERT INTO `orden_compra` (`id_oc`,`numero_oc`,`sku`,`tienda`,`cantidad`) VALUES (6,'OC-67892','SKU12385','COS',200);
-INSERT INTO `orden_compra` (`id_oc`,`numero_oc`,`sku`,`tienda`,`cantidad`) VALUES (7,'OC-67893','SKU12346','MAI',200);
-INSERT INTO `orden_compra` (`id_oc`,`numero_oc`,`sku`,`tienda`,`cantidad`) VALUES (8,'OC-67893','SKU12347','MAI',20);
-INSERT INTO `orden_compra` (`id_oc`,`numero_oc`,`sku`,`tienda`,`cantidad`) VALUES (9,'OC-67894','SKU12385','MAI',200);
+--
+-- INSERT VALORES
+--
+-- INSERT INTO `productos` (`sku`,`id_producto`,`nombre`,`descripcion`,`categoria`) VALUES ('SKU12345',1,'Labial blush','Tinte rojo para labios.','Labios');
+-- INSERT INTO `productos` (`sku`,`id_producto`,`nombre`,`descripcion`,`categoria`) VALUES ('SKU12346',2,'Labial brillo','Brillo para labios.','Labios');
+-- INSERT INTO `productos` (`sku`,`id_producto`,`nombre`,`descripcion`,`categoria`) VALUES ('SKU12347',3,'Sombras','Sombras para ojos.','Ojos');
+-- INSERT INTO `productos` (`sku`,`id_producto`,`nombre`,`descripcion`,`categoria`) VALUES ('SKU12385',4,'Encrespador','Especial para pestañas.','Ojos');
+-- INSERT INTO `productos` (`sku`,`id_producto`,`nombre`,`descripcion`,`categoria`) VALUES ('SKU12349',5,'Skincare facial','Cuidado facial.','Cara');
+-- INSERT INTO `productos` (`sku`,`id_producto`,`nombre`,`descripcion`,`categoria`) VALUES ('SKU12310',6,'Bloqueador en barra','Cuidado facial.','Cara');
+-- INSERT INTO `usuarios` (`nombre`, `apellido`, `fecha_creacion`, `estado_usuario`, `rol`, `password_hash`)VALUES("Nicolas", "Paredes", "2025-11-02 12:00:00", 'activo', 'encargado', "abc12354");
+-- INSERT INTO `orden_compra` (`id_oc`,`numero_oc`,`sku`,`tienda`,`cantidad`) VALUES (1,'OC-67890','SKU12345','COS',100);
+-- INSERT INTO `orden_compra` (`id_oc`,`numero_oc`,`sku`,`tienda`,`cantidad`) VALUES (3,'OC-67890','SKU12310','COS',10);
+-- INSERT INTO `orden_compra` (`id_oc`,`numero_oc`,`sku`,`tienda`,`cantidad`) VALUES (4,'OC-67892','SKU12346','COS',100);
+-- INSERT INTO `orden_compra` (`id_oc`,`numero_oc`,`sku`,`tienda`,`cantidad`) VALUES (5,'OC-67892','SKU12347','COS',120);
+-- INSERT INTO `orden_compra` (`id_oc`,`numero_oc`,`sku`,`tienda`,`cantidad`) VALUES (6,'OC-67892','SKU12385','COS',200);
+-- INSERT INTO `orden_compra` (`id_oc`,`numero_oc`,`sku`,`tienda`,`cantidad`) VALUES (7,'OC-67893','SKU12346','MAI',200);
+-- INSERT INTO `orden_compra` (`id_oc`,`numero_oc`,`sku`,`tienda`,`cantidad`) VALUES (8,'OC-67893','SKU12347','MAI',20);
+-- INSERT INTO `orden_compra` (`id_oc`,`numero_oc`,`sku`,`tienda`,`cantidad`) VALUES (9,'OC-67894','SKU12385','MAI',200);

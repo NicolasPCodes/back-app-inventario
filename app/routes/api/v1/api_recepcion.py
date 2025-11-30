@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import Flask, jsonify, request
 import mysql.connector
 from dotenv import load_dotenv
@@ -14,6 +15,33 @@ db_queries = DB_Queries()
 @app.route('/', methods=['GET'])
 def debug_main():
     return jsonify({"message": "Hello world!"}), 200
+
+## BORRAR DESPUES DE PRUEBAS
+@app.route('/insert-valores', methods=['GET'])
+def insert_valores():
+    db_queries.insert_prueba()
+    return jsonify({"message": "Insert valores!"}), 200
+
+@app.route('/get-valores-tables', methods=['POST'])
+def querys_debug():
+    data = request.get_json()
+    table_name = data.get('table_name', 'prueba')
+    result = db_queries.get_all(table_name)
+    if result:
+        return jsonify({"status": "success", "data": result}), 200
+    else:
+        return jsonify({"status": "error", "message": "No data found"}), 404
+
+@app.route('/clean-tables', methods=['POST'])
+def querys_clean_debug():
+    data = request.get_json()
+    table_name = data.get('table_name', 'prueba')
+    result = db_queries.clean_table(table_name)
+    if result:
+        return jsonify({"status": "success", "data": result}), 200
+    else:
+        return jsonify({"status": "error", "message": "No data found"}), 404
+## BORRAR DESPUES DE PRUEBAS
 
 # Endpoint para obtener recepcion
 @app.route('/recepcion', methods=['POST'])
@@ -38,6 +66,7 @@ def listar_oc_tienda():
 
     # Obtener listado de OC
     oc_list = db_queries.get_all_oc(store_id)
+
     if oc_list:
         return jsonify({"status": "success", "data": oc_list}), 200
     else:
@@ -61,101 +90,64 @@ def detalle_oc():
 @app.route('/actualizar_recepcion', methods=['POST'])
 def actualizar_recepcion():
     data = request.get_json()
-    sku_producto = data['sku']
-    numero_oc = data['numero_oc']
-    cantidad_recepcionada = data['cantidad_recepcionada']
+    numero_oc = data['doc']
+    comentario = data['comment']
+    id_usuario = data['id_user']
+    sku_producto_list = data['data']
+    # cantidad_recepcionar = data['cantidad_recepcionar']
+
+    print(f"Received data: products={sku_producto_list}, OC={numero_oc}, Comment={comentario}")
+
+    # Valida que no haya sido recepcionado
+    product_list_corregido = []
+    for producto in sku_producto_list:
+        sku_producto = producto['sku']
+        cantidad_recepcionar = producto['cantidad']
+        id_oc_recepcionar = db_queries.get_id_oc_sku(sku_producto, numero_oc)
+        if id_oc_recepcionar is None:
+            return jsonify({"status": "error", "message": f"SKU {sku_producto} o Numero OC {numero_oc} no validos"}), 404
+        product_list_corregido.append({"id_oc_recepcionar": id_oc_recepcionar[0]['id_oc'], "sku_producto": sku_producto, "cantidad_recepcionar": cantidad_recepcionar})
+
+    if len(product_list_corregido) == 0:
+        return jsonify({"status": "error", "message": "No se encontro uno de los productos."}), 404
+
+    print(f"Corrected product list: {product_list_corregido}")
+    list_ids_oc = [prod['id_oc_recepcionar'] for prod in product_list_corregido]
+    print(f"List of OC IDs to validate: {list_ids_oc}")
+    lista_error_recepcion = []
+    ## Fecha de recepcion
+    fecha_recepcion = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    for producto in product_list_corregido:
+        id_oc_recepcionar = producto['id_oc_recepcionar']
+        sku_producto = producto['sku_producto']
+        cantidad_recepcionar = producto['cantidad_recepcionar']
+        # Prepara variable para insert
+        # Inicia recepcion
+        print(f"Updating reception for SKU: {sku_producto}, OC ID: {id_oc_recepcionar}, Quantity: {cantidad_recepcionar}")
+
+        # Valida que no este en tabla recepcion
+        validacion_recepcion = db_queries.get_recepcionado_line(id_oc_recepcionar)
+        print(f"Reception validation for OC ID {id_oc_recepcionar}: {validacion_recepcion}")
+        if validacion_recepcion:
+            return jsonify({"status": "error", "message": f"El SKU {sku_producto} ya ha sido recepcionado."}), 400
+
+        # Valida cantidades
+        # Ingresa recepcion en la tabla
+        insert_values = db_queries.insert_recepcion_producto(
+            id_oc=id_oc_recepcionar,
+            id_usuario=id_usuario,
+            fecha=fecha_recepcion,
+            cantidad_recepcionada=cantidad_recepcionar,
+            comentario=comentario,
+        )
+        print(f"Insert values result: {insert_values}")
+        if not insert_values:
+            lista_error_recepcion.append(sku_producto)
+            print(f"Error inserting reception for SKU {sku_producto}")
+            continue
 
     # Actualizar recepcion
-    update_status = db_queries.update_recepcion(sku_producto, numero_oc, cantidad_recepcionada)
-    if update_status:
-        return jsonify({"status": "success", "message": "Recepcion actualizada"}), 200
-    else:
-        return jsonify({"status": "error", "message": "Error al actualizar recepcion"}), 500
+    if len(lista_error_recepcion) > 0:
+        return jsonify({"status": "error", "message": f"Error al insertar recepcion para los siguientes SKUs: {', '.join(lista_error_recepcion)}"}), 500
 
-# if __name__ == '__main__':
-#     app.run(debug=True)
-# # Inicia variables de entorno
-# load_dotenv()
-# # Inicializa a aplicacion Flask
-# app = Flask(__name__)
-
-# # Conexion db
-# db = mysql.connector.connect(
-#     host="localhost",
-#     user="root",
-#     password="niebla2018",
-#     database="recepcion_dbs"
-# )
-
-# # Endpoint para obtener recepcion
-# @app.route('/recepcion', methods=['POST'])
-# def recepcionar_producto():
-#     # Obtener datos de request
-#     data = request.get_json()
-#     sku_producto = data['sku']
-#     numero_oc = data['numero_oc']
-
-#     # Crear cursor
-#     cursor = db.cursor(dictionary=True)
-#     sql = f"SELECT * FROM orden_compra WHERE sku = {sku_producto} AND numero_oc = {numero_oc}"
-#     cursor.execute(sql)
-#     producto = cursor.fetchone()
-#     cursor.close()
-#     if producto:
-#         return jsonify({"status": "success", "data": producto}), 200
-#     else:
-#         return jsonify({"status": "error", "message": "Producto no encontrado"}), 404
-
-
-
-# if __name__ == '__main__':
-#     app.run(debug=True)
-
-
-
-
-    # if producto:
-    #     return jsonify({"status": "success", "data": producto}), 200
-    # else:
-    #     return jsonify({"status": "error", "message": "Producto no encontrado"}), 404
-# from flask import Flask, jsonify, request
-# import mysql.connector
-# from dotenv import load_dotenv
-# import os
-
-# # Inicia variables de entorno
-# load_dotenv()
-# # Inicializa a aplicacion Flask
-# app = Flask(__name__)
-
-# # Conexion db
-# db = mysql.connector.connect(
-#     host=os.getenv("DB_HOST"),
-#     user=os.getenv("DB_USER"),
-#     password=os.getenv("DB_PASSWORD"),
-#     database=os.getenv("DB_DATABASE")
-# )
-
-# # Endpoint para obtener recepcion
-# @app.route('/recepcion', methods=['POST'])
-# def recepcionar_producto():
-#     # Obtener datos de request
-#     data = request.get_json()
-#     sku_producto = data['sku']
-#     numero_oc = data['numero_oc']
-
-#     # Crear cursor
-#     cursor = db.cursor(dictionary=True)
-#     sql = "SELECT * FROM orden_compra WHERE sku = %s AND numero_oc = %s"
-#     cursor.execute(sql, (sku_producto, numero_oc))
-#     producto = cursor.fetchone()
-#     cursor.close()
-
-#     if producto:
-#         return jsonify({"status": "success", "data": producto}), 200
-#     else:
-#         return jsonify({"status": "error", "message": "Producto no encontrado"}), 404
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
+    return jsonify({"status": "success", "message": "Recepcion actualizada"}), 200

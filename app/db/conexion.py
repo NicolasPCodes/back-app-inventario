@@ -13,6 +13,7 @@ class DatabaseConn:
                 database=os.getenv("DB_DATABASE"),
                 port=int(os.getenv("DB_PORT"))
             )
+            print("Database connection established.")
         except mysql.connector.Error as err:
             print(f"Error: {err}")
             self.db = None
@@ -28,6 +29,7 @@ class DatabaseConn:
             else:
                 cursor.execute(sql)
             result = cursor.fetchall()
+            # print(f"Query executed: {sql} with values {values}, Result: {result}")
             return result
         except mysql.connector.Error as err:
             print(f"Error: {err}")
