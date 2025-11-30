@@ -87,14 +87,40 @@ class DB_Queries:
         INSERT INTO `orden_compra` (`id_oc`,`numero_oc`,`sku`,`tienda`,`cantidad`) VALUES (9,'OC-67894','SKU12385','MAI',200);"""
         result = self.db.write(sql, ())
         return result
-    
+
+    def insert_OCS_prueba(self, num_oc):
+        # sql = f"""
+        # INSERT INTO `orden_compra` (`numero_oc`,`sku`,`tienda`,`cantidad`) VALUES ('OC-{int(num_oc)}','SKU12345','COS',100);
+        # INSERT INTO `orden_compra` (`numero_oc`,`sku`,`tienda`,`cantidad`) VALUES ('OC-{int(num_oc)}','SKU12310','COS',10);
+        # INSERT INTO `orden_compra` (`numero_oc`,`sku`,`tienda`,`cantidad`) VALUES ('OC-{int(num_oc) + 1}','SKU12346','COS',100);
+        # INSERT INTO `orden_compra` (`numero_oc`,`sku`,`tienda`,`cantidad`) VALUES ('OC-{int(num_oc) + 1}','SKU12347','COS',120);
+        # INSERT INTO `orden_compra` (`numero_oc`,`sku`,`tienda`,`cantidad`) VALUES ('OC-{int(num_oc) + 1}','SKU12385','COS',200);
+        # INSERT INTO `orden_compra` (`numero_oc`,`sku`,`tienda`,`cantidad`) VALUES ('OC-{int(num_oc) + 2}','SKU12346','MAI',200);
+        # INSERT INTO `orden_compra` (`numero_oc`,`sku`,`tienda`,`cantidad`) VALUES ('OC-{int(num_oc) + 2}','SKU12347','MAI',20);
+        # INSERT INTO `orden_compra` (`numero_oc`,`sku`,`tienda`,`cantidad`) VALUES ('OC-{int(num_oc) + 3}','SKU12385','MAI',200);"""
+        sql = """INSERT INTO orden_compra (numero_oc, sku, tienda, cantidad)
+             VALUES (%s, %s, %s, %s)"""
+
+        data = [
+            ("OC-{}".format(num_oc), "SKU12345", "COS", 100),
+            ("OC-{}".format(num_oc), "SKU12310", "COS", 10),
+            ("OC-{}".format(num_oc + 1), "SKU12346", "COS", 100),
+            ("OC-{}".format(num_oc + 1), "SKU12347", "COS", 120),
+            ("OC-{}".format(num_oc + 1), "SKU12385", "COS", 200),
+            ("OC-{}".format(num_oc + 2), "SKU12346", "MAI", 200),
+            ("OC-{}".format(num_oc + 2), "SKU12347", "MAI", 20),
+            ("OC-{}".format(num_oc + 3), "SKU12385", "MAI", 200),
+        ]
+        result = self.db.write_many(sql, data)
+        return result
+
     def get_all(self, table_name):
         sql = f"SELECT * FROM {table_name}"
         result = self.db.read(sql)
         if result:
             return result
         return None
-    
+
     def clean_table(self, table_name):
         sql = f"DELETE FROM {table_name}"
         result = self.db.write(sql, ())

@@ -1,6 +1,6 @@
 from datetime import datetime
 from flask import Flask, jsonify, request
-import mysql.connector
+from flask_cors import CORS
 from dotenv import load_dotenv
 import os
 from app.db.db_querys import DB_Queries
@@ -8,6 +8,7 @@ from app.db.db_querys import DB_Queries
 load_dotenv()
 # Inicializa a aplicacion Flask
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*"}})
 db_queries = DB_Queries()
 
 
@@ -21,6 +22,13 @@ def debug_main():
 def insert_valores():
     db_queries.insert_prueba()
     return jsonify({"message": "Insert valores!"}), 200
+
+@app.route('/insert-ocs-dev', methods=['GET'])
+def insert_ocs_dev():
+    data = request.get_json()
+    num_oc = data.get('num_oc', 67860)
+    db_queries.insert_OCS_prueba(num_oc)
+    return jsonify({"message": "Insert OCS valores!"}), 200
 
 @app.route('/get-valores-tables', methods=['POST'])
 def querys_debug():
