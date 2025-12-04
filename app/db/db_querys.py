@@ -22,7 +22,7 @@ class DB_Queries:
         return None
 
     def get_detail_oc(self, oc_number):
-        sql = "SELECT * FROM orden_compra WHERE numero_oc = %s"
+        sql = "SELECT id_oc, cantidad, sku, tienda FROM orden_compra WHERE numero_oc = %s"
         values = (oc_number,)
         result = self.db.read(sql, values)
         if result:
@@ -68,6 +68,16 @@ class DB_Queries:
         result = self.db.write(sql, values)
         return result
     
+    def validate_sku_recepcionado(self, id_oc_list):
+        format_strings = ','.join(['%s'] * len(id_oc_list))
+        sql = f"SELECT id_oc, cantidad_recibida FROM recepcion WHERE id_oc IN ({format_strings})"
+        values = tuple(id_oc_list)
+        result = self.db.read(sql, values)
+        if result:
+            return result
+        return None
+    
+    ### DEBUG METHODS ###
     def insert_prueba(self):
         sql = """
         INSERT INTO `productos` (`sku`,`id_producto`,`nombre`,`descripcion`,`categoria`) VALUES ('SKU12345',1,'Labial blush','Tinte rojo para labios.','Labios');

@@ -89,10 +89,27 @@ def detalle_oc():
 
     # Obtener detalle de OC
     oc_detail = db_queries.get_detail_oc(oc_number)
-    if oc_detail:
-        return jsonify({"status": "success", "data": oc_detail}), 200
-    else:
+    if not oc_detail:
         return jsonify({"status": "error", "message": "OC no encontrada"}), 404
+    # else:
+    # Valida estado de recepcion por SKU
+    line_sku_list = [item['id_oc'] for item in oc_detail]
+    # print(f"SKUs in OC: {line_sku_list}")
+    # print(f"DETALLE in OC: {oc_detail}")
+    oc_recep_detail = db_queries.validate_sku_recepcionado( line_sku_list )
+    if oc_recep_detail is None:
+        oc_recep_list = []
+    else:
+        oc_recep_list = [id_oc['id_oc'] for id_oc in oc_recep_detail]
+    # Ids encontrados se cruzan con el detalle OC y se deja el estado como true o false
+    for oc_select in oc_detail:
+        if len(oc_recep_list) > 0 and oc_select['id_oc'] in oc_recep_list:
+            oc_select['estado'] = True
+        else:
+            oc_select['estado'] = False
+    # print(f"Reception details for OC: {oc_recep_detail}")
+    return jsonify({"status": "success", "data": oc_detail}), 200
+    
 
 # Endpoint para actualizar recepcion de liena OC
 @app.route('/actualizar_recepcion', methods=['POST'])
