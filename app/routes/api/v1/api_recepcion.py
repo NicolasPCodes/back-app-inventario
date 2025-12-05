@@ -4,6 +4,7 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 import os
 from app.db.db_querys import DB_Queries
+import json
 # Inicia variables de entorno
 load_dotenv()
 # Inicializa a aplicacion Flask
@@ -115,6 +116,11 @@ def detalle_oc():
 @app.route('/actualizar_recepcion', methods=['POST'])
 def actualizar_recepcion():
     data = request.get_json()
+    if type(data) is str:
+        data = json.loads(data)
+    print(f"Received request data: {type(data)}")
+    print(f"Received request data content: {data}")
+    print('-'*100)
     numero_oc = data['doc']
     comentario = data['comment']
     id_usuario = data['id_user']
